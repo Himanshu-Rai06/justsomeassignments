@@ -1,33 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="graph">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MLT Graded Assignments</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;600;700&family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="top">
-    <h1>MLT graded assignments</h1>
-    <p>Machine Learning Techniques, IIT Madras BS. Pick a week to read it here.</p>
+    <div>
+      <h1>MLT graded assignments</h1>
+      <p>Machine Learning Techniques, IIT Madras BS.</p>
+    </div>
+    <div class="themes" role="group" aria-label="Theme">
+      <button data-theme="graph" aria-pressed="true">Graph paper</button>
+      <button data-theme="cozy" aria-pressed="false">Cozy desk</button>
+      <button data-theme="bubbles" aria-pressed="false">Bubbles</button>
+    </div>
   </header>
 
   <main class="layout">
     <nav class="weeks" aria-label="Assignments">
       <input id="filter" type="search" placeholder="Filter, e.g. 5" aria-label="Filter weeks">
+      <p id="progress" class="progress"></p>
       <ul id="list"></ul>
       <p id="status" class="status" role="status">Loading assignments…</p>
     </nav>
 
-    <section class="viewer" aria-live="polite">
+    <section class="viewer" id="viewer" aria-live="polite">
       <div class="viewer-bar" id="bar" hidden>
         <strong id="title"></strong>
         <span class="actions">
+          <label class="done"><input type="checkbox" id="doneBox"> Done</label>
           <a id="open" target="_blank" rel="noopener">Open full page</a>
           <a id="download" download>Download</a>
+          <button id="close" class="close" aria-label="Close preview">Close</button>
         </span>
       </div>
       <div class="empty" id="empty">
@@ -35,6 +45,11 @@
         <p>Choose a week from the list.</p>
       </div>
       <iframe id="frame" title="PDF preview" hidden></iframe>
+    </section>
+
+    <section class="field" id="field" aria-label="Assignment bubbles">
+      <canvas id="canvas"></canvas>
+      <p class="hint" id="hint">Click a bubble to read that week. Move your mouse through them to nudge them around.</p>
     </section>
   </main>
 
