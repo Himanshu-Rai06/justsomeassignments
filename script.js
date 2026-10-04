@@ -106,6 +106,7 @@ document.addEventListener("keydown", (e) => {
 
 /* ---------- themes ---------- */
 function setTheme(t) {
+  if (t !== "graph" && t !== "bubbles") t = "graph";
   root.dataset.theme = t;
   store("mlt-theme", t);
   document.querySelectorAll(".themes button").forEach((b) =>
@@ -190,20 +191,18 @@ function draw() {
   ctx.textAlign = "center"; ctx.textBaseline = "middle";
   for (const b of bubbles) {
     const isDone = done.has(b.name);
-    const rr = b.r * (b === hover ? 1.08 : 1);
-    const hue = isDone ? 150 : 185 + ((b.n * 29) % 110);
-    const g = ctx.createRadialGradient(b.x - rr * 0.35, b.y - rr * 0.35, rr * 0.1, b.x, b.y, rr);
-    g.addColorStop(0, `hsla(${hue},90%,90%,.95)`);
-    g.addColorStop(1, `hsla(${hue},70%,55%,.55)`);
+    b.s = (b.s || 1) + ((b === hover ? 1.07 : 1) - (b.s || 1)) * 0.15;   // smooth hover grow
+    const rr = b.r * b.s;
+    const hue = 205 + ((b.n * 17) % 60);
     ctx.beginPath(); ctx.arc(b.x, b.y, rr, 0, Math.PI * 2);
-    ctx.fillStyle = g; ctx.fill();
-    ctx.lineWidth = 1.5; ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.stroke();
-    ctx.fillStyle = "#0a2f40";
-    ctx.font = `600 ${Math.round(rr * 0.4)}px Fredoka, sans-serif`;
+    ctx.fillStyle = isDone ? "hsl(150 38% 85%)" : `hsl(${hue} 55% 88%)`;   // flat, light
+    ctx.fill();
+    ctx.fillStyle = "#2b3640";
+    ctx.font = `500 ${Math.round(rr * 0.38)}px "DM Sans", sans-serif`;
     ctx.fillText(shortLabel(b.name), b.x, b.y - (isDone ? rr * 0.08 : 0));
     if (isDone) {
-      ctx.font = `700 ${Math.round(rr * 0.3)}px Nunito, sans-serif`;
-      ctx.fillText("✓", b.x, b.y + rr * 0.42);
+      ctx.font = `700 ${Math.round(rr * 0.28)}px "DM Sans", sans-serif`;
+      ctx.fillText("\u2713", b.x, b.y + rr * 0.4);
     }
   }
 }
@@ -230,19 +229,6 @@ window.addEventListener("resize", () => {
   if (root.dataset.theme !== "bubbles") return;
   sizeCanvas();
   bubbles.forEach((b) => { b.x = Math.min(b.x, W - b.r); b.y = Math.min(b.y, H - b.r); });
-});
-
-const themeButtons = document.querySelectorAll('.themes button');
-
-themeButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    const theme = button.getAttribute('data-theme');
-    document.documentElement.setAttribute('data-theme', theme);
-    
-    // Update ARIA states
-    themeButtons.forEach(btn => btn.setAttribute('aria-pressed', 'false'));
-    button.setAttribute('aria-pressed', 'true');
-  });
 });
 
 /* ---------- load ---------- */
