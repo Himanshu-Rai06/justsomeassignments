@@ -232,6 +232,19 @@ window.addEventListener("resize", () => {
   bubbles.forEach((b) => { b.x = Math.min(b.x, W - b.r); b.y = Math.min(b.y, H - b.r); });
 });
 
+const themeButtons = document.querySelectorAll('.themes button');
+
+themeButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const theme = button.getAttribute('data-theme');
+    document.documentElement.setAttribute('data-theme', theme);
+    
+    // Update ARIA states
+    themeButtons.forEach(btn => btn.setAttribute('aria-pressed', 'false'));
+    button.setAttribute('aria-pressed', 'true');
+  });
+});
+
 /* ---------- load ---------- */
 function fail(msg) { statusEl.textContent = msg; hint.textContent = msg; }
 
